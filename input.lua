@@ -27,50 +27,54 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ]]--
 
-Class = require "hump.class"
+Input = {}
+Input.__index = Input
 
-Input = Class {
-	--[[
-		Input Manager
-	]]--
-	function(self)
-		local numJoysticks = love.joystick.getNumJoysticks()
-		
-		self.keyboard	= {
+--[[
+	Input Manager
+]]--
+function Input.init()
+	local t = {}
+	setmetatable(t, Input)
+	
+	local numJoysticks = love.joystick.getNumJoysticks()
+	
+	t.keyboard	= {
+		press		= {},
+		release		= {},
+		hold		= {},
+	}
+	
+	t.mouse		= {
+		press		= {},
+		release		= {},
+		hold		= {},
+	}
+	
+	t.joystick = {}
+	for i=1, numJoysticks do
+		t.joystick[i]	= {
 			press		= {},
 			release		= {},
-			hold		= {},
+			hold		= {
+				hats	= {},
+				axes	= {},
+			},
 		}
 		
-		self.mouse		= {
-			press		= {},
-			release		= {},
-			hold		= {},
-		}
+		local numHats = love.joystick.getNumHats(i)
+		for j=1, numHats do
+			t.joystick[i].hold.hats[j]		= {}
+		end
 		
-		self.joystick = {}
-		for i=1, numJoysticks do
-			self.joystick[i]	= {
-				press		= {},
-				release		= {},
-				hold		= {
-					hats	= {},
-					axes	= {},
-				},
-			}
-			
-			local numHats = love.joystick.getNumHats(i)
-			for j=1, numHats do
-				self.joystick[i].hold.hats[j]		= {}
-			end
-			
-			local numAxes = love.joystick.getNumAxes(i)
-			for j=1, numAxes do
-				self.joystick[i].hold.axes[j]		= {}
-			end
+		local numAxes = love.joystick.getNumAxes(i)
+		for j=1, numAxes do
+			t.joystick[i].hold.axes[j]		= {}
 		end
 	end
-}
+	
+	return t
+end
 
 --[[
 	Add Button Binding

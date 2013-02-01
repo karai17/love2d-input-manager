@@ -7,7 +7,7 @@ function love.load()
 	global.w = 32
 	global.h = 32
 	
-	input = Input()
+	input = Input:init()
 	
 	-- Set Keyboard Controls
 	input:addButton("keyboard",	"press",	"escape",	function() love.event.push("quit") end)
